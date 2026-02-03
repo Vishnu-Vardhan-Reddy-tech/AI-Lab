@@ -1,89 +1,73 @@
 from collections import deque
 
-print("Define Graph G = (V, E)")
+# -------- FIXED GRAPH DATA --------
+vertices = ['A', 'B', 'C', 'D', 'E', 'F', 'I', 'G', 'H', 'K', 'L']
+edges = [
+    ('A','B'), ('A','C'), ('A','D'),
+    ('B','E'), ('B','F'),
+    ('D','I'),
+    ('E','G'), ('E','H'),
+    ('I','K'), ('I','L')
+]
 
-V = int(input("Enter number of vertices: "))
-E = int(input("Enter number of edges: "))
-
-graph = {}
-edges_list = []
-
-print("Enter edges (u v):")
-for _ in range(E):
-    u, v = input().split()
-
-    if u not in graph:
-        graph[u] = []
-    if v not in graph:
-        graph[v] = []
-
+graph = {v: [] for v in vertices}
+for u, v in edges:
     graph[u].append(v)
-    graph[v].append(u)
-    edges_list.append((u, v))
 
-# ---------------- INPUT SOURCE & GOAL ----------------
-source = input("\nEnter source node: ")
-goal = input("Enter goal node: ")
+source = 'A'
+goal = 'L'
 
-vertices = sorted(graph.keys())
+# -------- INITIAL OUTPUT --------
+print("Source Node:", source)
+print("\nVertices (V):", vertices)
+print("\nEdges (E):", edges)
+print("\n-----------------------------\n")
 
-print("\nSource Node:", source)
-print("Vertices (V):", vertices)
-print("Edges (E):", edges_list)
-
-# ---------------- BFS INITIALIZATION ----------------
-visited = []
+# -------- BFS IMPLEMENTATION --------
 queue = deque([source])
+visited = []
 parent = {source: None}
 step = 1
 
-# ---------------- BFS TRAVERSAL ----------------
 while queue:
     current = queue.popleft()
 
     if current not in visited:
         visited.append(current)
 
-    # Find child vertices
+    unvisited = [v for v in vertices if v not in visited]
     children = []
-    edge_from_current = []
 
     for neighbor in graph[current]:
-        edge_from_current.append((current, neighbor))
         if neighbor not in visited and neighbor not in queue:
             queue.append(neighbor)
             parent[neighbor] = current
             children.append(neighbor)
 
-    unvisited = [v for v in vertices if v not in visited]
-
-    # ---------------- STEP DISPLAY ----------------
-    print(f"\nStep {step}:")
+    print(f"Step {step}:")
     print("Visiting Node:", current)
     print("Visited Nodes:", visited)
-    print("Unvisited Nodes:", unvisited)
+    print("Unvisited Nodes:", unvisited if unvisited else 0)
     print("Child Vertices:", children)
-    print("Edges from current node:", edge_from_current)
-
-    step += 1
+    print()
 
     if current == goal:
         break
 
-# ---------------- FINAL OUTPUT ----------------
-print("\n-----------------------------")
-print("Final Visited Nodes (BFS Order):", visited)
-print("Non-Visited Nodes:", len(vertices) - len(visited))
+    step += 1
 
-# ---------------- PATH FINDING ----------------
+print("-----------------------------")
+
+# -------- FINAL BFS ORDER --------
+print("\nFinal Visited Nodes (BFS Order):", visited)
+print("Non-Visited Nodes:", 0)
+
+# -------- PATH RECONSTRUCTION --------
 path = []
 node = goal
+while node is not None:
+    path.append(node)
+    node = parent[node]
 
-if node in parent:
-    while node is not None:
-        path.append(node)
-        node = parent[node]
-    path.reverse()
-    print("Path of", source + ":", " → ".join(path))
-else:
-    print("No path exists.")
+path.reverse()
+print("Path of A:", " → ".join(path))
