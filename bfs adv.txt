@@ -1,21 +1,26 @@
 from collections import deque
 
-# -------- FIXED GRAPH DATA --------
-vertices = ['A', 'B', 'C', 'D', 'E', 'F', 'I', 'G', 'H', 'K', 'L']
+# -------- FIXED GRAPH (WITH COSTS) --------
+graph = {
+    'S': [('A', 2), ('B', 5)],
+    'A': [('C', 2), ('D', 4)],
+    'B': [('D', 1)],
+    'C': [('G', 3)],
+    'D': [('G', 2)],
+    'G': []
+}
+
+vertices = ['S', 'A', 'B', 'C', 'D', 'G']
 edges = [
-    ('A','B'), ('A','C'), ('A','D'),
-    ('B','E'), ('B','F'),
-    ('D','I'),
-    ('E','G'), ('E','H'),
-    ('I','K'), ('I','L')
+    ('S','A',2), ('S','B',5),
+    ('A','C',2), ('A','D',4),
+    ('B','D',1),
+    ('C','G',3),
+    ('D','G',2)
 ]
 
-graph = {v: [] for v in vertices}
-for u, v in edges:
-    graph[u].append(v)
-
-source = 'A'
-goal = 'L'
+source = 'S'
+goal = 'G'
 
 # -------- INITIAL OUTPUT --------
 print("Source Node:", source)
@@ -38,7 +43,7 @@ while queue:
     unvisited = [v for v in vertices if v not in visited]
     children = []
 
-    for neighbor in graph[current]:
+    for neighbor, cost in graph[current]:
         if neighbor not in visited and neighbor not in queue:
             queue.append(neighbor)
             parent[neighbor] = current
@@ -70,4 +75,4 @@ while node is not None:
     node = parent[node]
 
 path.reverse()
-print("Path of A:", " → ".join(path))
+print("Path of S:", " → ".join(path))
