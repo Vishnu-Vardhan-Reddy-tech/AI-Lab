@@ -1,0 +1,54 @@
+from collections import deque
+
+def bfs(graph, start, goal):
+    q = deque([start])
+    visited = {start}
+    parent = {start: None}
+    step = 1
+
+    print("\nStep  Queue              current Node   Visited              Parent Update")
+    print("-"*70)
+
+    while q:
+        node = q.popleft()
+
+        if node == goal:
+            print(step, list(q), node, list(visited), "GOAL")
+            break
+
+        parent_update = "-"
+        for n in graph[node]:
+            if n not in visited:
+                visited.add(n)
+                parent[n] = node
+                q.append(n)
+                parent_update = f"{n}<-{node}"
+
+        print(step, list(q), node , list(visited), parent_update)
+        step += 1
+
+    path = []
+    while goal:
+        path.append(goal)
+        goal = parent.get(goal)
+
+    return path[::-1]
+
+
+graph = {
+'A':['B','C'],
+'B':['D','E'],
+'C':['F'],
+'D':['G'],
+'E':[],
+'F':['H','I'],
+'G':['J'],
+'H':[],
+'I':[],
+'J':['K'],
+'K':['L'],
+'L':['M'],
+'M':[]
+}
+
+print("\nShortest Path:", " -> ".join(bfs(graph,'A','M')))
