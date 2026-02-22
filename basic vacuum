@@ -1,0 +1,54 @@
+
+environment = {
+    "A": "Dirty",
+    "B": "Dirty"
+}
+
+agent_location = "A"
+performance = 0
+total_tasks = 2  
+
+
+print("\nVACUUM CLEANER AGENT – PERCEPT SEQUENCE TABLE\n")
+
+print("| Location | Percept(State) | Action         | Performance | Percentage (%) |")
+print("---------------------------------------------------------------------------")
+
+def print_row(location, percept, action, performance):
+    percentage = (performance / total_tasks) * 100
+    print(f"|   {location:<6} | {percept:<14} | {action:<14} | {performance:<11} | {percentage:<13} |")
+
+
+percept = environment[agent_location]
+environment[agent_location] = "Clean"
+performance += 1
+print_row(agent_location, percept, "SUCK", performance)
+
+
+percept = environment[agent_location]
+print_row(agent_location, percept, "NO OPERATION", performance)
+
+print_row("A→B", "----", "RIGHT", performance)
+agent_location = "B"
+
+percept = environment[agent_location]
+environment[agent_location] = "Clean"
+performance += 1
+print_row(agent_location, percept, "SUCK", performance)
+
+percept = environment[agent_location]
+print_row(agent_location, percept, "NO OPERATION", performance)
+
+print_row("B→A", "----", "LEFT", performance)
+agent_location = "A"
+
+percept = environment[agent_location]
+print_row(agent_location, percept, "NO OPERATION", performance)
+
+final_percentage = (performance / total_tasks) * 100
+
+print("\nFINAL PERFORMANCE SUMMARY")
+print("-------------------------")
+print("Total Locations Cleaned :", performance)
+print("Total Locations        :", total_tasks)
+print("Final Performance %    :", final_percentage, "%")
