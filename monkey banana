@@ -1,0 +1,59 @@
+state = ["Door", "Window", False, False]
+
+step = 1
+
+print("Step\tMonkey\tBox\tOnBox\tBanana\tAction")
+print("------------------------------------------------")
+
+# Initial state
+print(step, "\t", state[0], "\t", state[1], "\t", state[2], "\t", state[3],
+      "\tStart")
+step += 1
+
+# If monkey is not at box location
+if state[0] != state[1]:
+  state[0] = "Window"
+  print(step, "\t", state[0], "\t", state[1], "\t", state[2], "\t", state[3],
+        "\tMonkey moves to Window")
+  step += 1
+
+# If monkey reaches box
+if state[0] == state[1]:
+  print(step, "\t", state[0], "\t", state[1], "\t", state[2], "\t", state[3],
+        "\tMonkey finds the box")
+  step += 1
+
+# If box not under banana
+if state[1] != "Middle":
+  state[1] = "Middle"
+  state[0] = "Middle"
+  print(step, "\t", state[0], "\t", state[1], "\t", state[2], "\t", state[3],
+        "\tMonkey pushes box to Middle")
+  step += 1
+
+# Monkey checks banana
+if state[0] == "Middle":
+  print(step, "\t", state[0], "\t", state[1], "\t", state[2], "\t", state[3],
+        "\tMonkey looks at banana")
+  step += 1
+
+# Monkey climbs box
+if not state[2]:
+  state[2] = True
+  print(step, "\t", state[0], "\t", state[1], "\t", state[2], "\t", state[3],
+        "\tMonkey climbs the box")
+  step += 1
+
+# Monkey reaches banana
+if state[2] and state[0] == "Middle":
+  print(step, "\t", state[0], "\t", state[1], "\t", state[2], "\t", state[3],
+        "\tMonkey reaches banana")
+  step += 1
+
+# Monkey grabs banana
+if state[2]:
+  state[3] = True
+  print(step, "\t", state[0], "\t", state[1], "\t", state[2], "\t", state[3],
+        "\tMonkey grabs banana")
+
+print("\nGoal State Reached")
