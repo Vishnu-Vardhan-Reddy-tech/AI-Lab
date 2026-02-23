@@ -1,6 +1,7 @@
+
 import heapq
 
-# 7-Level Graph
+
 graph = {
     'A': [('B', 2), ('C', 1)],
     'B': [('D', 3)],
@@ -29,7 +30,7 @@ def uniform_cost_search(start, goal):
         print("Expanding:", current, " Cost:", cost)
 
         if current == goal:
-            print("\n✅ Goal Found")
+            print("\nGoal Found")
             print("Path:", path)
             print("Total Cost:", cost)
             return
@@ -42,10 +43,10 @@ def uniform_cost_search(start, goal):
 
         level += 1
 
-    print("❌ Goal not reachable")
+    print("Goal not reachable")
 
 
-# Driver
+
 start_node = 'A'
 goal_node = 'J'
 uniform_cost_search(start_node, goal_node)
