@@ -1,0 +1,77 @@
+from collections import deque
+
+# Capacities
+capacity = [12, 8, 5, 3]
+
+# Initial state
+start = (12, 0, 0, 0)
+
+# Goal condition
+def is_goal(state):
+    return state[0] == 6 and state[1] == 6
+
+def bfs():
+    queue = deque()
+    queue.append((start, []))  # (state, path)
+
+    visited = set()
+    visited.add(start)
+
+    while queue:
+        current, path = queue.popleft()
+
+        if is_goal(current):
+            return path + [(current, "Goal Reached")]
+
+        # Generate next states
+        for i in range(4):
+            # Fill
+            if current[i] < capacity[i]:
+                new = list(current)
+                new[i] = capacity[i]
+                new = tuple(new)
+
+                if new not in visited:
+                    visited.add(new)
+                    queue.append((new, path + [(current, f"Fill Jug {i+1}")]))
+            
+            # Empty
+            if current[i] > 0:
+                new = list(current)
+                new[i] = 0
+                new = tuple(new)
+
+                if new not in visited:
+                    visited.add(new)
+                    queue.append((new, path + [(current, f"Empty Jug {i+1}")]))
+            
+            # Pour i → j
+            for j in range(4):
+                if i != j and current[i] > 0 and current[j] < capacity[j]:
+                    new = list(current)
+
+                    transfer = min(current[i], capacity[j] - current[j])
+                    new[i] -= transfer
+                    new[j] += transfer
+                    new = tuple(new)
+
+                    if new not in visited:
+                        visited.add(new)
+                        queue.append((new, path + [(current, f"Pour Jug {i+1} -> Jug {j+1}")]))
+    
+    return None
+
+
+# Run
+result = bfs()
+
+# Print Output
+print("Water Jug Problem using BFS")
+print("Jugs: 12L, 8L, 5L, 3L")
+print("Initial State:", start)
+print("Goal: (6,6,*,*)\n")
+
+print("Solution Sequence:\n")
+
+for state, action in result:
+    print(f"{action} => {state}")
