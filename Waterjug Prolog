@@ -1,0 +1,79 @@
+% Initial and Goal States
+initial(state(12,0,0,0)).
+goal(state(6,6,_,_)).
+
+capacity(12,8,5,3).
+
+% -----------------------------
+% Move Definitions
+% -----------------------------
+
+% Fill operations
+move(state(A,B,C,D), state(12,B,C,D), 'Fill Jug1') :- A < 12.
+move(state(A,B,C,D), state(A,8,C,D), 'Fill Jug2') :- B < 8.
+move(state(A,B,C,D), state(A,B,5,D), 'Fill Jug3') :- C < 5.
+move(state(A,B,C,D), state(A,B,C,3), 'Fill Jug4') :- D < 3.
+
+% Empty operations
+move(state(A,B,C,D), state(0,B,C,D), 'Empty Jug1') :- A > 0.
+move(state(A,B,C,D), state(A,0,C,D), 'Empty Jug2') :- B > 0.
+move(state(A,B,C,D), state(A,B,0,D), 'Empty Jug3') :- C > 0.
+move(state(A,B,C,D), state(A,B,C,0), 'Empty Jug4') :- D > 0.
+
+% Pour operations (Jug1 -> Jug2 example, similarly others)
+
+move(state(A,B,C,D), state(A1,B1,C,D), 'Pour Jug1->Jug2') :-
+    A > 0, B < 8,
+    Transfer is min(A, 8-B),
+    A1 is A - Transfer,
+    B1 is B + Transfer.
+
+move(state(A,B,C,D), state(A1,B,C1,D), 'Pour Jug1->Jug3') :-
+    A > 0, C < 5,
+    Transfer is min(A, 5-C),
+    A1 is A - Transfer,
+    C1 is C + Transfer.
+
+move(state(A,B,C,D), state(A1,B,C,D1), 'Pour Jug1->Jug4') :-
+    A > 0, D < 3,
+    Transfer is min(A, 3-D),
+    A1 is A - Transfer,
+    D1 is D + Transfer.
+
+move(state(A,B,C,D), state(A,B1,C1,D), 'Pour Jug2->Jug3') :-
+    B > 0, C < 5,
+    Transfer is min(B, 5-C),
+    B1 is B - Transfer,
+    C1 is C + Transfer.
+
+move(state(A,B,C,D), state(A,B1,C,D1), 'Pour Jug2->Jug4') :-
+    B > 0, D < 3,
+    Transfer is min(B, 3-D),
+    B1 is B - Transfer,
+    D1 is D + Transfer.
+
+move(state(A,B,C,D), state(A,B,C1,D1), 'Pour Jug3->Jug4') :-
+    C > 0, D < 3,
+    Transfer is min(C, 3-D),
+    C1 is C - Transfer,
+    D1 is D + Transfer.
+
+% (You can similarly add reverse pours if needed)
+
+% -----------------------------
+% DFS Search
+% -----------------------------
+
+solve :-
+    initial(State),
+    dfs(State, [State]).
+
+dfs(State, _) :-
+    goal(State),
+    write('Goal Reached: '), write(State), nl.
+
+dfs(State, Visited) :-
+    move(State, Next, Action),
+    \+ member(Next, Visited),
+    write(Action), write(' => '), write(Next), nl,
+    dfs(Next, [Next|Visited]).
