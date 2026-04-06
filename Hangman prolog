@@ -1,0 +1,46 @@
+% Word to guess
+word(hello).
+
+% Start game
+start :-
+    word(Word),
+    atom_chars(Word, Letters),
+    length(Letters, Len),
+    make_blanks(Len, Blanks),
+    play(Letters, Blanks, 6).
+
+% Create blanks
+make_blanks(0, []).
+make_blanks(N, ['_'|T]) :-
+    N > 0,
+    N1 is N-1,
+    make_blanks(N1, T).
+
+% Game loop
+play(_, Word, _) :-
+    \+ member('_', Word),
+    write('You Win!'), nl.
+
+play(_, _, 0) :-
+    write('You Lose!'), nl.
+
+play(Letters, Current, Attempts) :-
+    write(Current), nl,
+    write('Enter a letter: '),
+    read(Guess),
+    check(Letters, Current, Guess, NewWord, Found),
+    (
+        Found = true ->
+        NewAttempts = Attempts ;
+        NewAttempts is Attempts - 1
+    ),
+    play(Letters, NewWord, NewAttempts).
+
+% Check letter
+check([], [], _, [], false).
+check([H|T], [C|Rest], G, [H|R], true) :-
+    H = G,
+    check(T, Rest, G, R, _).
+check([H|T], [C|Rest], G, [C|R], F) :-
+    H \= G,
+    check(T, Rest, G, R, F).
